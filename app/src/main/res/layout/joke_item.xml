@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_margin="6dp"
+    android:background="@drawable/border"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:minHeight="100dp"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:textSize="20sp"
+    android:paddingVertical="20dp"
+    android:text="@string/hello_blank_fragment"
+    android:textColor="@android:color/black"
+    android:id="@+id/joke_textview"
+    />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:weightSum="4"
+        android:paddingHorizontal="20dp">
+        <ImageButton
+            android:id="@+id/sharebtn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/share"
+            android:layout_gravity="center"
+            android:contentDescription="share" />
+        <ImageButton
+            android:id="@+id/whatsappbtn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/whatsapp"
+            android:layout_gravity="center"
+            android:contentDescription="whatsapp" />
+        <ImageButton
+            android:id="@+id/copybtn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/copy"
+            android:layout_gravity="center"
+            android:contentDescription="copy" />
+        <ImageButton
+            android:id="@+id/facebookbtn"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:src="@drawable/facebook"
+            android:layout_gravity="center"
+            android:contentDescription="facebook" />
+    </LinearLayout>
+</LinearLayout>
