@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.firebase.Timestamp;
 
-public class Category implements Parcelable {
+public class Category {
     String Category,Image;
     int count;
     Timestamp Timestamp;
@@ -20,17 +20,7 @@ public class Category implements Parcelable {
         Timestamp = in.readParcelable(com.google.firebase.Timestamp.class.getClassLoader());
     }
 
-    public static final Creator<Category> CREATOR = new Creator<Category>() {
-        @Override
-        public Category createFromParcel(Parcel in) {
-            return new Category(in);
-        }
 
-        @Override
-        public Category[] newArray(int size) {
-            return new Category[size];
-        }
-    };
 
     public String getCategory() {
         return Category;
@@ -64,16 +54,4 @@ public class Category implements Parcelable {
         Timestamp = timestamp;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(Category);
-        dest.writeString(Image);
-        dest.writeInt(count);
-        dest.writeParcelable(Timestamp, flags);
-    }
 }

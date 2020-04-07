@@ -20,10 +20,28 @@
     android:layout_below="@+id/toolbar_cat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="50dp"
+    android:paddingBottom="80dp"
     android:clipToPadding="false"
     />
-
+    <ProgressBar
+        android:layout_below="@+id/toolbar_cat"
+        android:id="@+id/catview_progress_main"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateDrawable="@drawable/progress"
+        />
+    <ProgressBar
+        android:id="@+id/catview_progress_bottom"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:indeterminateDrawable="@drawable/progress"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:visibility="gone"
+        />
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView2"
         android:layout_width="match_parent"

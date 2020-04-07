@@ -1,6 +1,8 @@
 package com.ajinkya.jokeapp.viewModels;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -21,7 +23,7 @@ import java.util.ArrayList;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
-public class Fetcher {
+public class Fetcher implements Parcelable {
     public ArrayList<Joke> jokes;
     public ArrayList<Joke> morejokes;
     public dataLoadListener listener;
@@ -47,6 +49,21 @@ public class Fetcher {
         morejokes=new ArrayList<>();
 
     }
+
+    protected Fetcher(Parcel in) {
+    }
+
+    public static final Creator<Fetcher> CREATOR = new Creator<Fetcher>() {
+        @Override
+        public Fetcher createFromParcel(Parcel in) {
+            return new Fetcher(in);
+        }
+
+        @Override
+        public Fetcher[] newArray(int size) {
+            return new Fetcher[size];
+        }
+    };
 
     public void getdata(){
         FirebaseFirestore db= FirebaseFirestore.getInstance();
@@ -88,6 +105,7 @@ public class Fetcher {
                                 lastvisible=document;
                             }
                             listener.moreLoaded(morejokes);
+                            jokes.addAll(morejokes);
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
@@ -157,10 +175,23 @@ public class Fetcher {
                                 lastvisible=document;
                             }
                             listener.moreLoaded(morejokes);
+                            jokes.addAll(morejokes);
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+    }
+    public ArrayList<Joke> getData(){
+        return jokes;
     }
 }

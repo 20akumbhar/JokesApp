@@ -26,23 +26,10 @@ import java.util.ArrayList;
 public class JokeAdapter extends RecyclerView.Adapter<JokeAdapter.JokeHolder> {
     Context context;
     ArrayList<Joke> jokes;
-    onJokeClicked callback;
-public JokeAdapter(Context context, ArrayList<Joke> jokeslist, Fragment fragment){
+public JokeAdapter(Context context, ArrayList<Joke> jokeslist){
     this.context=context;
     this.jokes=jokeslist;
-    if(fragment!=null) {
-        if (fragment instanceof onJokeClicked) {
-            callback = (onJokeClicked) fragment;
-        } else {
-            throw new RuntimeException(fragment.toString() + "must implement listener");
-        }
-    }else{
-        if (context instanceof onJokeClicked) {
-            callback = (onJokeClicked) context;
-        } else {
-            throw new RuntimeException(context.toString() + "must implement listener");
-        }
-    }
+
 }
     @NonNull
     @Override
@@ -54,12 +41,6 @@ public JokeAdapter(Context context, ArrayList<Joke> jokeslist, Fragment fragment
     @Override
     public void onBindViewHolder(@NonNull JokeHolder holder, final int position) {
     holder.joke.setText(jokes.get(position).getJoke());
-        holder.joke.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callback.JokeClicked(position);
-            }
-        });
     }
 
     @Override

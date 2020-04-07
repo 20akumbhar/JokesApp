@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.ajinkya.jokeapp.R;
 import com.ajinkya.jokeapp.activities.JokeActivity;
@@ -21,17 +23,27 @@ import com.ajinkya.jokeapp.interfaces.dataLoadListener;
 import com.ajinkya.jokeapp.interfaces.onJokeClicked;
 import com.ajinkya.jokeapp.models.Joke;
 import com.ajinkya.jokeapp.viewModels.Fetcher;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TrendingFragment extends Fragment implements dataLoadListener, onJokeClicked {
+public class TrendingFragment extends Fragment{
 RecyclerView recyclerView;
 JokeAdapter jokeAdapter;
 ArrayList<Joke> jokeslist;
-Fetcher fetcher;
+    ProgressBar main,bottom;
+    private QueryDocumentSnapshot lastvisible;
+
     public TrendingFragment() {
         // Required empty public constructor
     }
@@ -47,42 +59,67 @@ Fetcher fetcher;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        main=view.findViewById(R.id.trending_progress_main);
+        bottom=view.findViewById(R.id.trending_progress_bottom);
+        main.setVisibility(View.VISIBLE);
         recyclerView=(RecyclerView)view.findViewById(R.id.trending_recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         jokeslist=new ArrayList<>();
-        jokeAdapter=new JokeAdapter(getContext(), jokeslist, TrendingFragment.this);
-        fetcher=new Fetcher(TrendingFragment.this);
-        fetcher.getTrendData();
+        jokeAdapter=new JokeAdapter(getContext(), jokeslist);
         recyclerView.setAdapter(jokeAdapter);
+        final FirebaseFirestore db= FirebaseFirestore.getInstance();
+        db.collection("Jokes")
+                .whereEqualTo("like",true)
+                .orderBy("Timestamp", Query.Direction.DESCENDING)
+                .limit(10)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(TAG, document.getId() + " => " + document.getData());
+                                jokeslist.add(document.toObject(Joke.class));
+                                lastvisible=document;
+                            }
+                            jokeAdapter.notifyDataSetChanged();
+                            main.setVisibility(View.GONE);
+                        } else {
+                            Log.w(TAG, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (!recyclerView.canScrollVertically(View.SCROLL_INDICATOR_BOTTOM)){
-                    fetcher.getMoreTrendData();
+                    bottom.setVisibility(View.VISIBLE);
+                    db.collection("Jokes")
+                            .whereEqualTo("like",true)
+                            .orderBy("Timestamp", Query.Direction.DESCENDING)
+                            .startAfter(lastvisible)
+                            .limit(8)
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            Log.d(TAG, document.getId() + " => " + document.getData());
+                                            jokeslist.add(document.toObject(Joke.class));
+                                            lastvisible=document;
+                                        }
+                                        jokeAdapter.notifyDataSetChanged();
+                                        bottom.setVisibility(View.GONE);
+                                    } else {
+                                        Log.w(TAG, "Error getting documents.", task.getException());
+                                    }
+                                }
+                            });
                 }
             }
         });
-    }
-
-    @Override
-    public void onclicked(ArrayList<Joke> jokes) {
-        jokeslist.clear();
-        jokeslist.addAll(jokes);
-        jokeAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void moreLoaded(ArrayList<Joke> jokes) {
-        jokeslist.addAll(jokes);
-        jokeAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void JokeClicked(int position) {
-        Intent intent=new Intent(getContext(), JokeActivity.class);
-        intent.putExtra("position",position);
-        getContext().startActivity(intent);
     }
 }
