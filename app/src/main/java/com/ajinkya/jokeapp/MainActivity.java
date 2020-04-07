@@ -20,10 +20,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import com.ajinkya.jokeapp.interfaces.onJokeClicked;
 
 import com.ajinkya.jokeapp.ui.main.SectionsPagerAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements onJokeClicked {
 Toolbar toolbar;
 AdView mAdView;
     @Override
@@ -42,6 +45,7 @@ AdView mAdView;
         mAdView.loadAd(adRequest);
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
@@ -64,5 +68,10 @@ AdView mAdView;
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void JokeClicked(int position) {
+        Toast.makeText(this, "position "+position, Toast.LENGTH_SHORT).show();
     }
 }

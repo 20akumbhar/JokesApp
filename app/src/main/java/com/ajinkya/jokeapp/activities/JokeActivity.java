@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.ajinkya.jokeapp.R;
 import com.ajinkya.jokeapp.adapters.JokePagerAdapter;
@@ -18,6 +19,7 @@ JokePagerAdapter jokePagerAdapter;
         viewPager=(ViewPager)findViewById(R.id.joke_pager);
         jokePagerAdapter=new JokePagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(jokePagerAdapter);
-
+int position=getIntent().getIntExtra("position",0);
+        Toast.makeText(this, "position from act:"+position, Toast.LENGTH_SHORT).show();
     }
 }

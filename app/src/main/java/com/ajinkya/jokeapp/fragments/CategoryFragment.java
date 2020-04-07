@@ -15,14 +15,19 @@ import android.view.ViewGroup;
 
 import com.ajinkya.jokeapp.R;
 import com.ajinkya.jokeapp.adapters.CategoryAdapter;
+import com.ajinkya.jokeapp.interfaces.CategoryListener;
+import com.ajinkya.jokeapp.models.Category;
+import com.ajinkya.jokeapp.viewModels.categoryFetcher;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CategoryFragment extends Fragment {
+public class CategoryFragment extends Fragment implements CategoryListener {
 RecyclerView recyclerView;
 CategoryAdapter categoryAdapter;
-
+ArrayList<Category> categories;
     public CategoryFragment() {
         // Required empty public constructor
     }
@@ -41,7 +46,16 @@ CategoryAdapter categoryAdapter;
         recyclerView=(RecyclerView)view.findViewById(R.id.category_recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        categoryAdapter=new CategoryAdapter(getActivity());
+        categories=new ArrayList<>();
+        categoryAdapter=new CategoryAdapter(getActivity(),categories);
+        categoryFetcher fetcher=new categoryFetcher(CategoryFragment.this);
         recyclerView.setAdapter(categoryAdapter);
+    }
+
+    @Override
+    public void onLoaded(ArrayList<Category> categoryList) {
+        categories.clear();
+        categories.addAll(categoryList);
+        categoryAdapter.notifyDataSetChanged();
     }
 }

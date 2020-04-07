@@ -14,11 +14,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ajinkya.jokeapp.R;
 import com.ajinkya.jokeapp.activities.CatViewActivity;
+import com.ajinkya.jokeapp.models.Category;
+
+import java.util.ArrayList;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.viewholder> {
-    Context context;
-    public CategoryAdapter(Context context) {
+    private Context context;
+    private ArrayList<Category> categories;
+    public CategoryAdapter(Context context, ArrayList<Category> categories) {
         this.context=context;
+        this.categories=categories;
+
     }
 
     @NonNull
@@ -30,12 +36,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.viewho
 
     @Override
     public void onBindViewHolder(@NonNull viewholder holder, int position) {
-
+holder.cat.setText(categories.get(position).getCategory());
     }
 
     @Override
     public int getItemCount() {
-        return 20;
+        return categories.size();
     }
 
     public class viewholder extends RecyclerView.ViewHolder {
